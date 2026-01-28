@@ -1,6 +1,7 @@
-package com.salimmeshref.securemessenger
+package com.salimmeshref.securemessenger.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -11,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.salimmeshref.securemessenger.ui.auth.AuthScreen
 import com.salimmeshref.securemessenger.ui.theme.SecureMessengerTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -22,13 +24,14 @@ class MainActivity : ComponentActivity() {
         setContent {
             SecureMessengerTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                   AuthScreen(onAuthSuccess = { Log.d(TAG, "onCreate: Authentication Successful") } )
                 }
             }
         }
+    }
+
+    companion object {
+        private const val TAG = "MainActivity"
     }
 }
 

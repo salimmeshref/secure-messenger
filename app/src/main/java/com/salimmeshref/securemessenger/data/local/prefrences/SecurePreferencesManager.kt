@@ -1,4 +1,4 @@
-package com.salimmeshref.securemessenger.data
+package com.salimmeshref.securemessenger.data.local.prefrences
 
 import android.content.Context
 import androidx.security.crypto.EncryptedSharedPreferences
