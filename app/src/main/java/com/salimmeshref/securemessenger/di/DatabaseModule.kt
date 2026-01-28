@@ -3,6 +3,8 @@ package com.salimmeshref.securemessenger.di
 import android.content.Context
 import androidx.room.Room
 import com.salimmeshref.securemessenger.data.local.db.AppDatabase
+import com.salimmeshref.securemessenger.data.local.db.dao.ConversationDao
+import com.salimmeshref.securemessenger.data.local.db.dao.MessageDao
 import com.salimmeshref.securemessenger.data.local.db.dao.UserDao
 import dagger.Module
 import dagger.Provides
@@ -28,4 +30,9 @@ object DatabaseModule {
     @Provides
     fun provideUserDao(database: AppDatabase): UserDao = database.userDao()
 
+    @Provides
+    fun provideMessageDao(database: AppDatabase): MessageDao = database.messageDao()
+
+    @Provides
+    fun provideConversationDao(database: AppDatabase): ConversationDao = database.conversationDao()
 }
