@@ -27,4 +27,7 @@ interface MessageDao {
 
     @Query("DELETE FROM messages WHERE conversationId = :conversationId")
     suspend fun deleteMessagesForConversation(conversationId: String)
+
+    @Query("SELECT MAX(timestamp) FROM messages WHERE conversationId = :conversationId")
+    suspend fun getLastMessageTimestamp(conversationId: String): Long?
 }

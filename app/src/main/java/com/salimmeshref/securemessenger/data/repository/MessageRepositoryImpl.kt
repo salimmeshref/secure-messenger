@@ -140,4 +140,25 @@ class MessageRepositoryImpl @Inject constructor(
                 entity.toDomain()
             }
     }
+
+    override suspend fun syncConversation(conversationId: String) {
+        try {
+            // 1. Get last sync timestamp for this conversation
+            val lastMessage = messageDao.getLastMessageTimestamp(conversationId) ?: 0L
+
+            // 2. Fetch only new messages from Firestore
+            val newMessages = firebaseMessageSource.getMessagesSince(
+                conversationId = conversationId,
+                since = lastMessage
+            )
+
+            // 3. Save to local Room database
+            if (newMessages.isNotEmpty()) {
+                messageDao.insertMessages(newMessages.map { it.toEntity() })
+            }
+        } catch (e: Exception) {
+            Log.e("MessageRepo", "Sync failed: ${e.message}")
+        }
+    }
+
 }

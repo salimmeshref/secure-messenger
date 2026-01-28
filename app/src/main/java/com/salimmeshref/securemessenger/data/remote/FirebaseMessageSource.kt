@@ -73,6 +73,18 @@ class FirebaseMessageSource @Inject constructor(
 
         awaitClose { listenerRegistration.remove() }
     }
+
+
+    suspend fun getMessagesSince(conversationId: String, since: Long): List<FirestoreMessage> {
+        return firestore.collection("conversations")
+            .document(conversationId)
+            .collection("messages")
+            .whereGreaterThan("timestamp", since)
+            .orderBy("timestamp")
+            .get()
+            .await()
+            .toObjects(FirestoreMessage::class.java)
+    }
 }
 
 data class FirestoreMessage(
