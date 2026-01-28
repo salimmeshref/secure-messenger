@@ -1,7 +1,11 @@
 package com.salimmeshref.securemessenger.di
 
 import com.salimmeshref.securemessenger.data.repository.AuthRepositoryImpl
+import com.salimmeshref.securemessenger.data.repository.ConversationRepositoryImpl
+import com.salimmeshref.securemessenger.data.repository.MessageRepositoryImpl
 import com.salimmeshref.securemessenger.domain.repository.AuthRepository
+import com.salimmeshref.securemessenger.domain.repository.ConversationRepository
+import com.salimmeshref.securemessenger.domain.repository.MessageRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -14,4 +18,12 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindAuthRepository(impl: AuthRepositoryImpl): AuthRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindMessageRepository(impl: MessageRepositoryImpl): MessageRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindConversationRepository(impl: ConversationRepositoryImpl): ConversationRepository
 }
