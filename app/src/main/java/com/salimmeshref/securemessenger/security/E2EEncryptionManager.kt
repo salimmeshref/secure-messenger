@@ -4,9 +4,10 @@ import java.security.PublicKey
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.inject.Inject
+import javax.inject.Singleton
 
 // here i used a hybrid approach combining RSA and AES for E2E encryption; the message is encrypted with AES (symmetric encryption - fast , efficient , lower computational overhead), and the session key is encrypted with RSA
-
+@Singleton
 class E2EEncryptionManager @Inject constructor(private val aesEncryptionManager: AesEncryptionManager, private val rsaEncryptionManager: RsaEncryptionManager, private val keyStoreManager: KeyStoreManager) {
 
     // Generate per-conversation session key
