@@ -45,4 +45,9 @@ class KeyStoreManager @Inject constructor() {
         return keyStore.getKey(alias, null) as? PrivateKey
     }
 
+    fun deleteKeyPair(alias: String) {
+        if (keyStore.containsAlias(alias)) {
+            keyStore.deleteEntry(alias)
+        }
+    }
 }

@@ -6,9 +6,10 @@ import kotlinx.coroutines.flow.Flow
 interface UserRepository {
     suspend fun getUserById(userId: String): User?
     suspend fun getUserByEmail(email: String): User?
-    suspend fun searchUsers(query: String): List<User>
+    suspend fun searchUsers(query: String, excludeUserId: String? = null): List<User>
     suspend fun updateFcmToken(token: String)
     suspend fun updateLastSeen()
     suspend fun getPublicKey(userId: String): String?
+    suspend fun updatePublicKey(userId: String, publicKey: String)
     fun observeUser(userId: String): Flow<User?>
 }

@@ -77,9 +77,6 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
 
-    // Maps
-    implementation(libs.bundles.maps)
-
     // Networking
     implementation(libs.bundles.networking)
 

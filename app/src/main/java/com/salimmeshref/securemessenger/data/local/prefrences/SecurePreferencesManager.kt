@@ -37,6 +37,14 @@ class SecurePreferencesManager @Inject constructor(@ApplicationContext private v
         return encryptedPrefs.getString(KEY_PRIVATE_KEY_ALIAS, null)
     }
 
+    fun saveCurrentUserId(userId: String) {
+        encryptedPrefs.edit() { putString(KEY_CURRENT_USER_ID, userId) }
+    }
+
+    fun getCurrentUserId(): String? {
+        return encryptedPrefs.getString(KEY_CURRENT_USER_ID, null)
+    }
+
     //use this method to clear all stored data (e.g., on logout)
     fun clearAll() {
         encryptedPrefs.edit() { clear() }
@@ -46,5 +54,6 @@ class SecurePreferencesManager @Inject constructor(@ApplicationContext private v
     companion object {
         private const val KEY_AUTH_TOKEN = "auth_token"
         private const val KEY_PRIVATE_KEY_ALIAS = "private_key_alias"
+        private const val KEY_CURRENT_USER_ID = "current_user_id"
     }
 }

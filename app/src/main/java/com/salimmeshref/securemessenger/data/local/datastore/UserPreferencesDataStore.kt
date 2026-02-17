@@ -73,6 +73,12 @@ class UserPreferencesDataStore @Inject constructor(
             preferences[PreferencesKeys.LAST_SYNC_TIMESTAMP] = timestamp
         }
     }
+
+    suspend fun updateMessagePreviewEnabled(enabled: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[PreferencesKeys.MESSAGE_PREVIEW_ENABLED] = enabled
+        }
+    }
 }
 
 data class UserPreferences(

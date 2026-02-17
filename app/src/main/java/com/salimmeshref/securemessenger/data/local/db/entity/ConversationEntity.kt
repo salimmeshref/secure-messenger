@@ -8,8 +8,9 @@ import com.salimmeshref.securemessenger.domain.model.Conversation
 data class ConversationEntity(
     @PrimaryKey
     val id: String,
-    val senderId:String,
-    val encryptedSessionKey: String,
+    val participantIds: String, // JSON array of user IDs
+    val encryptedSessionKeys: String, // JSON map: userId -> encryptedSessionKey
+    val creatorId: String,
     val lastMessagePreview: String?,
     val lastMessageAt: Long?,
     val unreadCount: Int = 0
@@ -17,8 +18,9 @@ data class ConversationEntity(
     fun toDomain(): Conversation {
         return Conversation(
             id = id,
-            participantIds = senderId,
-            encryptedSessionKey = encryptedSessionKey,
+            participantIds = participantIds,
+            encryptedSessionKeys = encryptedSessionKeys,
+            creatorId = creatorId,
             lastMessagePreview = lastMessagePreview,
             lastMessageAt = lastMessageAt,
             unreadCount = unreadCount

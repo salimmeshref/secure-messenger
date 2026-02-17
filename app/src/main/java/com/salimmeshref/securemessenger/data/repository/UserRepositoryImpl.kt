@@ -8,7 +8,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.salimmeshref.securemessenger.data.local.db.dao.UserDao
 import com.salimmeshref.securemessenger.domain.model.User
 import com.salimmeshref.securemessenger.domain.repository.UserRepository
-import com.salimmeshref.securemessenger.utils.NetworkMonitor
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -16,13 +15,11 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
 
-// data/repository/UserRepositoryImpl.kt
 @Singleton
 class UserRepositoryImpl @Inject constructor(
     private val userDao: UserDao,
     private val firestore: FirebaseFirestore,
     private val auth: FirebaseAuth,
-    private val networkMonitor: NetworkMonitor
 ) : UserRepository {
 
     override suspend fun getUserById(userId: String): User? {
@@ -61,7 +58,7 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun searchUsers(query: String): List<User> {
+    override suspend fun searchUsers(query: String, excludeUserId: String?): List<User> {
         return try {
             // Firestore doesn't support full-text search
             // This searches for displayName starting with query
@@ -72,7 +69,10 @@ class UserRepositoryImpl @Inject constructor(
                 .get()
                 .await()
 
-            snapshot.documents.mapNotNull { it.toUser() }
+            // Filter out the excluded user (current user) - Firestore doesn't support != on document ID
+            snapshot.documents
+                .mapNotNull { it.toUser() }
+                .filter { excludeUserId == null || it.id != excludeUserId }
         } catch (e: Exception) {
             emptyList()
         }
@@ -119,6 +119,24 @@ class UserRepositoryImpl @Inject constructor(
             doc.getString("publicKey")
         } catch (e: Exception) {
             null
+        }
+    }
+
+    override suspend fun updatePublicKey(userId: String, publicKey: String) {
+        try {
+            firestore.collection("users")
+                .document(userId)
+                .update("publicKey", publicKey)
+                .await()
+            Log.d("UserRepo", "Updated public key in Firestore for user: $userId")
+
+            // Also update local cache
+            userDao.getUserById(userId)?.let { entity ->
+                userDao.insertUser(entity.copy(publicKey = publicKey))
+            }
+        } catch (e: Exception) {
+            Log.e("UserRepo", "Failed to update public key: ${e.message}")
+            throw e
         }
     }
 

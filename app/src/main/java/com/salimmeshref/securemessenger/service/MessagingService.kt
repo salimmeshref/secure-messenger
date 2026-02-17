@@ -18,6 +18,10 @@ class MessagingService : FirebaseMessagingService() {
     @Inject lateinit var messageRepository: MessageRepository
     @Inject lateinit var notificationManager: AppNotificationManager
 
+    companion object {
+        private const val TAG = "MessagingService"
+    }
+
     override fun onNewToken(token: String) {
         super.onNewToken(token)
 
@@ -29,11 +33,28 @@ class MessagingService : FirebaseMessagingService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
+        Log.d(TAG, "FCM message received from: ${remoteMessage.from}")
 
+        // Handle notification payload (e.g., from Firebase Console)
+        remoteMessage.notification?.let { notification ->
+            Log.d(TAG, "Notification payload: title=${notification.title}, body=${notification.body}")
+            CoroutineScope(Dispatchers.IO).launch {
+                notificationManager.showMessageNotification(
+                    conversationId = remoteMessage.data["conversationId"] ?: "unknown",
+                    senderName = notification.title ?: "New Message",
+                    messagePreview = notification.body ?: "You have a new message"
+                )
+            }
+        }
+
+        // Handle data payload (from app backend/Cloud Functions)
         remoteMessage.data.let { data ->
-            when (data["type"]) {
-                "new_message" -> handleNewMessage(data)
-                "typing" -> handleTypingIndicator(data)
+            if (data.isNotEmpty()) {
+                Log.d(TAG, "Data payload: $data")
+                when (data["type"]) {
+                    "new_message" -> handleNewMessage(data)
+                    "typing" -> handleTypingIndicator(data)
+                }
             }
         }
     }
@@ -56,7 +77,7 @@ class MessagingService : FirebaseMessagingService() {
                     messagePreview = "New encrypted message" // Don't show content in notification
                 )
             } catch (e: Exception) {
-                Log.e("FCM", "Failed to process message: ${e.message}")
+                Log.e(TAG, "Failed to process message: ${e.message}")
             }
         }
     }

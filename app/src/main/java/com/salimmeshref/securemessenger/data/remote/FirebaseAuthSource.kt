@@ -74,6 +74,13 @@ class FirebaseAuthSource @Inject constructor(
                 .get()
                 .await()
 
+            // Check if user document exists in Firestore
+            if (!userDoc.exists()) {
+                // User authenticated but no Firestore profile - sign them out
+                auth.signOut()
+                throw Exception("User profile not found. Please sign up again.")
+            }
+
             Result.success(User(
                 id = firebaseUser.uid,
                 email = userDoc.getString("email") ?: "",
@@ -86,6 +93,26 @@ class FirebaseAuthSource @Inject constructor(
 
     fun signOut() {
         auth.signOut()
+    }
+
+    suspend fun deleteAccount(): Result<Unit> {
+        return try {
+            val currentUser = auth.currentUser ?: throw Exception("No user signed in")
+            val userId = currentUser.uid
+
+            // 1. Delete user document from Firestore
+            firestore.collection("users")
+                .document(userId)
+                .delete()
+                .await()
+
+            // 2. Delete user from Firebase Auth
+            currentUser.delete().await()
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 }
 

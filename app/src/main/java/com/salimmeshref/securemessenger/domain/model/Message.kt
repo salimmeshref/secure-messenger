@@ -6,6 +6,7 @@ data class Message(
     val id: String,
     val conversationId: String,
     val senderId: String,
+    val content: String = "", // Decrypted message content for display
     val cipherText: String,
     val iv: String,
     val type: String, // "text", "location", "image"

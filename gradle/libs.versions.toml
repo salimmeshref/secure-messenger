@@ -37,10 +37,6 @@ securityCrypto = "1.1.0-alpha06"
 firebaseBom = "32.7.2"
 googleServices = "4.4.1"
 
-# Google Maps
-mapsCompose = "4.3.0"
-playServicesMaps = "18.2.0"
-playServicesLocation = "21.1.0"
 
 # Networking
 retrofit = "2.9.0"
@@ -103,11 +99,6 @@ firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging-ktx" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage-ktx" }
 
-# Google Maps
-maps-compose = { group = "com.google.maps.android", name = "maps-compose", version.ref = "mapsCompose" }
-play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
-play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
-
 # Networking
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
@@ -154,12 +145,6 @@ firebase = [
     "firebase-firestore",
     "firebase-messaging",
     "firebase-storage"
-]
-
-maps = [
-    "maps-compose",
-    "play-services-maps",
-    "play-services-location"
 ]
 
 networking = [

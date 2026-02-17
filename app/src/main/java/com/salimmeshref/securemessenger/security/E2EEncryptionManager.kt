@@ -1,6 +1,9 @@
 package com.salimmeshref.securemessenger.security
 
+import android.util.Base64
+import java.security.KeyFactory
 import java.security.PublicKey
+import java.security.spec.X509EncodedKeySpec
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.inject.Inject
@@ -48,5 +51,24 @@ class E2EEncryptionManager @Inject constructor(private val aesEncryptionManager:
         val privateKey = keyStoreManager.getPrivateKey(privateKeyAlias)
             ?: throw IllegalStateException("Private key not found for alias: $privateKeyAlias")
         return rsaEncryptionManager.decrypt(encryptedSessionKey, privateKey)
+    }
+
+    // Decode a Base64-encoded public key to PublicKey object
+    fun decodePublicKey(base64PublicKey: String): PublicKey {
+        val keyBytes = Base64.decode(base64PublicKey, Base64.NO_WRAP)
+        val keySpec = X509EncodedKeySpec(keyBytes)
+        val keyFactory = KeyFactory.getInstance("RSA")
+        return keyFactory.generatePublic(keySpec)
+    }
+
+    // Create encrypted session keys for multiple participants
+    fun createEncryptedSessionKeysForParticipants(
+        sessionKey: SecretKey,
+        participantPublicKeys: Map<String, String> // userId -> base64PublicKey
+    ): Map<String, String> { // userId -> encryptedSessionKey
+        return participantPublicKeys.mapValues { (_, base64PublicKey) ->
+            val publicKey = decodePublicKey(base64PublicKey)
+            encryptSessionKeyForRecipient(sessionKey, publicKey)
+        }
     }
 }

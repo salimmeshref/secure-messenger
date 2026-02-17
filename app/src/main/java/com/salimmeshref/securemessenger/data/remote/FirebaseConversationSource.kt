@@ -60,8 +60,9 @@ class FirebaseConversationSource @Inject constructor(
             if (doc.exists()) {
                 val conversation = FirestoreConversation(
                     id = doc.id,
-                    participantIds = doc.getString("participantIds") ?: "",
-                    encryptedSessionKey = doc.getString("encryptedSessionKey") ?: "",
+                    participantIds = doc.getString("participantIds") ?: "[]",
+                    encryptedSessionKeys = doc.getString("encryptedSessionKeys") ?: "{}",
+                    creatorId = doc.getString("creatorId") ?: "",
                     lastMessagePreview = doc.getString("lastMessagePreview"),
                     lastMessageAt = doc.getLong("lastMessageAt"),
                     unreadCount = doc.getLong("unreadCount")?.toInt() ?: 0
@@ -89,8 +90,9 @@ class FirebaseConversationSource @Inject constructor(
                     val doc = change.document
                     val conversation = FirestoreConversation(
                         id = doc.id,
-                        participantIds = doc.getString("participantIds") ?: "",
-                        encryptedSessionKey = doc.getString("encryptedSessionKey") ?: "",
+                        participantIds = doc.getString("participantIds") ?: "[]",
+                        encryptedSessionKeys = doc.getString("encryptedSessionKeys") ?: "{}",
+                        creatorId = doc.getString("creatorId") ?: "",
                         lastMessagePreview = doc.getString("lastMessagePreview"),
                         lastMessageAt = doc.getLong("lastMessageAt"),
                         unreadCount = doc.getLong("unreadCount")?.toInt() ?: 0
@@ -115,8 +117,9 @@ class FirebaseConversationSource @Inject constructor(
                     if (doc.exists()) {
                         val conversation = FirestoreConversation(
                             id = doc.id,
-                            participantIds = doc.getString("participantIds") ?: "",
-                            encryptedSessionKey = doc.getString("encryptedSessionKey") ?: "",
+                            participantIds = doc.getString("participantIds") ?: "[]",
+                            encryptedSessionKeys = doc.getString("encryptedSessionKeys") ?: "{}",
+                            creatorId = doc.getString("creatorId") ?: "",
                             lastMessagePreview = doc.getString("lastMessagePreview"),
                             lastMessageAt = doc.getLong("lastMessageAt"),
                             unreadCount = doc.getLong("unreadCount")?.toInt() ?: 0
@@ -145,8 +148,9 @@ class FirebaseConversationSource @Inject constructor(
 
 data class FirestoreConversation(
     val id: String,
-    val participantIds: String,
-    val encryptedSessionKey: String,
+    val participantIds: String, // JSON array string
+    val encryptedSessionKeys: String, // JSON map string
+    val creatorId: String,
     val lastMessagePreview: String?,
     val lastMessageAt: Long?,
     val unreadCount: Int = 0
@@ -154,8 +158,9 @@ data class FirestoreConversation(
     fun toEntity(): ConversationEntity {
         return ConversationEntity(
             id = id,
-            senderId = participantIds,
-            encryptedSessionKey = encryptedSessionKey,
+            participantIds = participantIds,
+            encryptedSessionKeys = encryptedSessionKeys,
+            creatorId = creatorId,
             lastMessagePreview = lastMessagePreview,
             lastMessageAt = lastMessageAt,
             unreadCount = unreadCount

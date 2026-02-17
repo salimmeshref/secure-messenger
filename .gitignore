@@ -29,9 +29,16 @@ render.experimental.xml
 
 # Google Services (e.g. APIs or Firebase)
 google-services.json
-
+firebase.json
+.firebaserc
+functions/*
+functions
 # Android Profiling
 *.hprof
 
 #.DS_Store
 .DS_Store
+
+#Claude
+.claude/
+CLAUDE.md
